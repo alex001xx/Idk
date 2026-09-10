@@ -1,6 +1,6 @@
 -- ==================================================
--- 🌸 SCRIPT GUI ROSADO PASTEL TRANSPARENTE + FLORECITAS
--- Teletransporte Guardado | Punto de Control | Lista de Jugadores
+-- 🌸 SCRIPT GUI ROSADO PASTEL + ROSA INTENSO VENTANAS 3
+-- Teletransporte Guardado | Punto de Control | Lista + Teletransporte
 -- ==================================================
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -8,12 +8,17 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- 🎨 PALETA DE COLORES ROSADO PASTEL
-local COLOR_FONDO_VENTANA = Color3.fromRGB(255, 228, 235)    -- Fondo rosado claro
-local COLOR_BARRA_SUPERIOR = Color3.fromRGB(255, 180, 200)  -- Barra rosada más oscura
-local COLOR_TEXTO = Color3.fromRGB(90, 40, 60)              -- Texto marrón rosado oscuro
-local COLOR_FONDO_LISTA = Color3.fromRGB(255, 240, 245)     -- Fondo lista jugadores
-local COLOR_SELECCIONADO = Color3.fromRGB(255, 105, 180)    -- Color selección
+-- 🎨 PALETA DE COLORES
+-- Rosado pastel para ventanas 1 y 2
+local COLOR_FONDO_VENTANA = Color3.fromRGB(255, 228, 235)       -- Fondo rosado claro
+local COLOR_BARRA_SUPERIOR = Color3.fromRGB(255, 180, 200)     -- Barra rosada más oscura
+local COLOR_TEXTO = Color3.fromRGB(90, 40, 60)                 -- Texto marrón rosado oscuro
+-- Rosa normal/intenso para ventana 3 y lista
+local COLOR_FONDO_VENTANA3 = Color3.fromRGB(255, 192, 215)     -- Rosa más vivo
+local COLOR_BARRA_VENTANA3 = Color3.fromRGB(255, 130, 180)     -- Barra rosa intenso
+local COLOR_FONDO_LISTA = Color3.fromRGB(255, 210, 225)        -- Fondo lista jugadores
+local COLOR_SELECCIONADO = Color3.fromRGB(255, 64, 158)         -- Rosa fuerte selección
+
 local COLOR_BOTON_ON = Color3.fromRGB(0, 200, 80)
 local COLOR_BOTON_OFF = Color3.fromRGB(220, 60, 60)
 local COLOR_BOTON_OTROS = Color3.fromRGB(255, 255, 255)
@@ -36,8 +41,7 @@ local function agregarFlorecitas(parent, cantidad)
         flor.TextSize = 16
         flor.TextColor3 = Color3.fromRGB(255, 255, 255)
         flor.Parent = parent
-
-        -- Posición aleatoria sin superponer botones
+        task.wait()
         local posX = math.random(10, parent.AbsoluteSize.X - 26)
         local posY = math.random(30, parent.AbsoluteSize.Y - 40)
         flor.Position = UDim2.new(0, posX, 0, posY)
@@ -45,14 +49,17 @@ local function agregarFlorecitas(parent, cantidad)
 end
 
 -- Función para agregar barra minimizable
-local function agregarBarraMinimizable(frame, anchoOriginal, altoOriginal, nombreVentana)
+local function agregarBarraMinimizable(frame, anchoOriginal, altoOriginal, nombreVentana, colorBarra, colorBorde)
+    colorBarra = colorBarra or COLOR_BARRA_SUPERIOR
+    colorBorde = colorBorde or Color3.fromRGB(255, 150, 180)
+
     local barra = Instance.new("Frame")
     barra.Size = UDim2.new(1, 0, 0, 22)
     barra.Position = UDim2.new(0, 0, 0, 0)
-    barra.BackgroundColor3 = COLOR_BARRA_SUPERIOR
+    barra.BackgroundColor3 = colorBarra
     barra.BackgroundTransparency = TRANSPARENCIA
     barra.BorderSizePixel = 1
-    barra.BorderColor3 = Color3.fromRGB(255, 150, 180)
+    barra.BorderColor3 = colorBorde
     barra.ZIndex = 10
     barra.Parent = frame
 
@@ -71,7 +78,7 @@ local function agregarBarraMinimizable(frame, anchoOriginal, altoOriginal, nombr
     local btnMin = Instance.new("TextButton")
     btnMin.Size = UDim2.new(0, 22, 0, 22)
     btnMin.Position = UDim2.new(1, -22, 0, 0)
-    btnMin.BackgroundColor3 = Color3.fromRGB(255, 150, 180)
+    btnMin.BackgroundColor3 = colorBarra
     btnMin.BackgroundTransparency = TRANSPARENCIA * 0.8
     btnMin.Text = "-"
     btnMin.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -109,7 +116,7 @@ local function agregarBarraMinimizable(frame, anchoOriginal, altoOriginal, nombr
 end
 
 -- ==================================================
--- 🌸 VENTANA 1: TELETRANSPORTE GUARDADO
+-- 🌸 VENTANA 1: TELETRANSPORTE GUARDADO (Rosado Pastel)
 -- ==================================================
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
@@ -221,10 +228,8 @@ end
 LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 if LocalPlayer.Character then onCharacterAdded(LocalPlayer.Character) end
 
-agregarBarraMinimizable(frame, 180, 120, "Teleport Guardado")
-
 -- ==================================================
--- 🌸 VENTANA 2: PUNTO DE CONTROL
+-- 🌸 VENTANA 2: PUNTO DE CONTROL (Rosado Pastel)
 -- ==================================================
 local screenGui2 = Instance.new("ScreenGui")
 screenGui2.Name = "PuntoDeControl_GUI"
@@ -344,25 +349,24 @@ LocalPlayer.CharacterAdded:Connect(function(newChar)
     teleportToCheckpoint(newChar)
 end)
 
-agregarBarraMinimizable(frame2, 180, 90, "Punto de Control")
-
 -- ==================================================
--- 🌸 VENTANA 3: LISTA DE JUGADORES + TELETRANSPORTE
+-- 🌸 VENTANA 3: LISTA DE JUGADORES + TELETRANSPORTE (Rosa Intenso)
 -- ==================================================
+-- Ventana 3a: Lista de Jugadores
 local screenGuiLista = Instance.new("ScreenGui")
 screenGuiLista.Parent = LocalPlayer:WaitForChild("PlayerGui")
 screenGuiLista.ResetOnSpawn = false
 
 local frameLista = Instance.new("Frame")
 frameLista.Parent = screenGuiLista
-frameLista.BackgroundColor3 = COLOR_FONDO_VENTANA
+frameLista.BackgroundColor3 = COLOR_FONDO_VENTANA3
 frameLista.BackgroundTransparency = TRANSPARENCIA
 frameLista.Size = UDim2.new(0, 220, 0, 300)
 frameLista.Position = UDim2.new(0, 20, 0, 20)
 frameLista.Active = true
 frameLista.Draggable = true
 
-agregarBarraMinimizable(frameLista, 220, 300, "Lista de Jugadores")
+agregarBarraMinimizable(frameLista, 220, 300, "Lista de Jugadores", COLOR_BARRA_VENTANA3, Color3.fromRGB(255, 100, 160))
 agregarFlorecitas(frameLista, 5)
 
 local scrollingFrame = Instance.new("ScrollingFrame")
@@ -377,7 +381,7 @@ scrollingFrame.ScrollBarThickness = 4
 scrollingFrame.Parent = frameLista
 
 local uiListLayout = Instance.new("UIListLayout")
-uiListLayout.FillDirection = Enum.FillDirection
+uiListLayout.FillDirection = Enum.FillDirection.Vertical
 uiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 uiListLayout.SortOrder = Enum.SortOrder.Name
 uiListLayout.Padding = UDim.new(0, 6)
@@ -394,7 +398,7 @@ local function actualizarListaJugadores()
     for _, plr in ipairs(listaJugadores) do
         local playerEntry = Instance.new("Frame")
         playerEntry.Size = UDim2.new(1, -10, 0, 38)
-        playerEntry.BackgroundColor3 = (jugadorSeleccionado == plr) and COLOR_SELECCIONADO or Color3.fromRGB(255, 210, 225)
+        playerEntry.BackgroundColor3 = (jugadorSeleccionado == plr) and COLOR_SELECCIONADO or Color3.fromRGB(255, 200, 220)
         playerEntry.BackgroundTransparency = 0.2
         playerEntry.BorderSizePixel = 0
         playerEntry.Parent = scrollingFrame
@@ -415,7 +419,7 @@ local function actualizarListaJugadores()
         nameLabel.Parent = playerEntry
 
         if plr == LocalPlayer then
-            playerEntry.BackgroundColor3 = Color3.fromRGB(255, 180, 200)
+            playerEntry.BackgroundColor3 = Color3.fromRGB(255, 160, 190)
             nameLabel.Text = nameLabel.Text .. "  • TÚ"
         end
 
@@ -425,7 +429,7 @@ local function actualizarListaJugadores()
                 actualizarListaJugadores()
                 if statusLabel3 then
                     statusLabel3.Text = "Objetivo: " .. jugadorSeleccionado.Name
-                    statusLabel3.TextColor3 = Color3.fromRGB(255, 105, 180)
+                    statusLabel3.TextColor3 = COLOR_SELECCIONADO
                 end
             end
         end)
@@ -437,21 +441,21 @@ end
 Players.PlayerAdded:Connect(actualizarListaJugadores)
 Players.PlayerRemoving:Connect(actualizarListaJugadores)
 
--- Ventana 3b: Teletransportar al Jugador Seleccionado
+-- Ventana 3b: Teletransportar al Jugador Seleccionado (Rosa Intenso)
 local screenGui3 = Instance.new("ScreenGui")
 screenGui3.Parent = LocalPlayer:WaitForChild("PlayerGui")
 screenGui3.ResetOnSpawn = false
 
 local frame3 = Instance.new("Frame")
 frame3.Parent = screenGui3
-frame3.BackgroundColor3 = COLOR_FONDO_VENTANA
+frame3.BackgroundColor3 = COLOR_FONDO_VENTANA3
 frame3.BackgroundTransparency = TRANSPARENCIA
 frame3.Size = UDim2.new(0, 180, 0, 130)
 frame3.Position = UDim2.new(0.5, -90, 0.5, -65)
 frame3.Active = true
 frame3.Draggable = true
 
-agregarBarraMinimizable(frame3, 180, 130, "Teleportar Jugador")
+agregarBarraMinimizable(frame3, 180, 130, "Teleportar Jugador", COLOR_BARRA_VENTANA3, Color3.fromRGB(255, 100, 160))
 agregarFlorecitas(frame3, 3)
 
 local btnSeleccionarCercano = Instance.new("TextButton")
@@ -559,7 +563,7 @@ btnSeleccionarCercano.MouseButton1Click:Connect(function()
     actualizarListaJugadores()
     if jugadorSeleccionado then
         statusLabel3.Text = "Objetivo: " .. jugadorSeleccionado.Name
-        statusLabel3.TextColor3 = Color3.fromRGB(255, 105, 180)
+        statusLabel3.TextColor3 = COLOR_SELECCIONADO
     else
         statusLabel3.Text = "No se encontró jugador"
         statusLabel3.TextColor3 = Color3.fromRGB(200, 0, 0)
@@ -593,4 +597,4 @@ end)
 task.wait(0.5)
 actualizarListaJugadores()
 
-print("🌸 Script GUI Rosado Pastel cargado con florecitas")
+print("🌸 Script cargado: Ventanas 1-2 rosado pastel, Ventanas 3 rosa intenso con florecitas")
